@@ -80,8 +80,6 @@ class PolarBear:
         """
             Returns list of ids of graph's inputs.
         """
-        if self.reversed_linklist is None:
-            self.reversed_linklist = self.reversed_linklist
         return [key for key, (label_ty, _) in self.reversed_linklist.items()
                 if label_ty == self.INPUT]
 
