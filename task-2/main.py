@@ -7,14 +7,14 @@ RANDINT_HIGHER = 1000 * 1000 * 1000
 def make_graph(edges, ns, seed):
 	np.random.seed(seed)
 	n1, n2 = ns
-	mat = np.zeros(shape = (n1 + n2, n1 + n2,))
+	mat = np.zeros(shape = (max(n1, n2), max(n1, n2)))
 	for a, b in edges:
-		mat[a, n1 + b] = np.random.randint(RANDINT_HIGHER)
-		mat[n1 + b, a] = np.random.randint(RANDINT_HIGHER)
+		mat[a, b] = np.random.randint(RANDINT_HIGHER)
 	return mat
 
 
 def find_pplc(edges, ns):
+	np.seterr(all = 'ignore')
 	mat = None
 	iter_max = 10
 	for _ in range(iter_max):
