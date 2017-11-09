@@ -2,40 +2,46 @@ import sys
 import numpy as np
 
 RANDINT_SEED = 1543
-RANDINT_HIGHER = 1000 * 1000 * 1000
-MOD = 1e9 + 7
+RANDINT_HIGHER = 100
+EPS = 1e-9
 
-
-def det(matrix, mul = 1):
-	width = len(matrix)
-	if width == 1:
-		return mul * matrix[0][0]
-
-	sign = -1
-	answer = 0
+def det(mat):
+	width = len(mat)
+	answer = 1
 	for i in range(width):
-		m = []
-		for j in range(1, width):
-			minor = []
-			for k in range(width):
-				if k != i:
-					minor.append(matrix[j][k])
-			m.append(minor)
+		k = i
+		for j in range(i + 1, width):
+			if abs(mat[j][i]) > abs(mat[k][i]):
+				k = j
 
-		sign *= -1
-		answer += mul * solve(m, sign * matrix[0][i])
+		if abs(mat[k][i]) < EPS:
+			return 0
 
-	return answer % MOD
+		mat[i], mat[k] = mat[k], mat[i]
+		if i != k:
+			answer = -answer
 
-#matrix = [[1,-2,3],[0,-3,-4],[0,0,-3]]
-#print(solve(matrix, 1))
+		answer *= mat[i][i]
+		for j in range(i + 1, width):
+			mat[i][j] /= mat[i][i]
 
+		for j in range(width):
+			if j != i and abs(mat[j][i]) > EPS:
+				for k in range(i + 1, width):
+					mat[j][k] -= mat[i][k] * mat[j][i]
+	return answer
+
+def throw_dice():
+	cruel_random = 0
+	while cruel_random < EPS:
+		cruel_random = np.random.random() * RANDINT_HIGHER
+	return cruel_random
 
 def make_graph(edges, ns):
 	n1, n2 = ns
 	mat = np.zeros(shape = (max(n1, n2), max(n1, n2)))
 	for a, b in edges:
-		mat[a, b] = np.random.randint(RANDINT_HIGHER)
+		mat[a, b] = throw_dice()
 	return mat
 
 
@@ -46,10 +52,8 @@ def find_pplc(edges, ns):
 	iter_max = 10
 	for _ in range(iter_max):
 		mat = make_graph(edges, ns)
-		det = np.linalg.det(mat)
-		#print (det)
-		#print (mat)
-		if det != 0:
+		d = det(mat.tolist())
+		if d != 0:
 			return True
 	return False
 
