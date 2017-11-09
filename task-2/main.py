@@ -31,11 +31,13 @@ def det(mat):
 					mat[j][k] -= mat[i][k] * mat[j][i]
 	return answer
 
+
 def throw_dice():
 	cruel_random = 0
 	while cruel_random < EPS:
 		cruel_random = np.random.random() * RANDINT_HIGHER
 	return cruel_random
+
 
 def make_graph(edges, ns):
 	n1, n2 = ns
